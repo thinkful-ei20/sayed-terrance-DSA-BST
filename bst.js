@@ -102,12 +102,105 @@ class BinarySearchTree {
   }
 }
 
+function findHeight(tree) {
+  if (!tree) {
+    return 0;
+  }
+  const leftHeight = findHeight(tree.left);
+  const rightHeight = findHeight(tree.right);
+
+  return Math.max(leftHeight, rightHeight) + 1;
+}
+
+function checkTree(node) {
+  if (!node) {
+    return true;
+  }
+  if (node.left !== null && node.left.key > node.key) {
+    return false;
+  }
+  if (node.right !== null && node.right.key < node.key) {
+    return false;
+  }
+  const leftSide = checkTree(node.left);
+  const rightSide = checkTree(node.right);
+  if (!leftSide || !rightSide) {
+    return false;
+  }
+  return true;
+}
+
+function thirdLargest(node, count = { n: 0 }) {
+  if (!node || count.n === 3) return;
+
+  thirdLargest(node.right, count);
+  count.n++;
+
+  if (count.n === 3) {
+    console.log(node.key);
+  }
+
+  thirdLargest(node.left, count);
+}
+
+function checkBalance(node) {
+  const leftHeight = findHeight(node.left);
+  const rightHeight = findHeight(node.right);
+
+  if (Math.abs(leftHeight - rightHeight) > 1) {
+    return false;
+  }
+  return true;
+}
+
 const BST = new BinarySearchTree;
 
 BST.insert(3)
-BST.insert(4)
 BST.insert(1)
-BST.insert(9)
+BST.insert(4)
 BST.insert(6)
-BST.insert(7)
-BST.insert(5)
+BST.insert(9)
+// BST.insert(2)
+// BST.insert(5)
+// BST.insert(7)
+// BST.left.key = 10;
+// BST.insert(14)
+// BST.insert(20)
+// BST.insert(25)
+
+console.log(findHeight(BST));
+console.log(checkTree(BST));
+thirdLargest(BST);
+console.log(checkBalance(BST));
+
+// const setParentsNull = (tree) => {
+//   if (!tree.left && !tree.right) {
+//     tree.parent = null;
+//     return;
+//   } else
+//   if(!tree.right){
+//     tree.parent = null;
+//     return setParentsNull(tree.left);
+//   } else
+//   if(!tree.left){
+//     tree.parent = null;
+//     return setParentsNull(tree.right);
+//   } else {
+//     tree.parent = null;
+//     setParentsNull(tree.right);
+//     setParentsNull(tree.left);
+//   }
+// };
+// const replacer = (name, val) => {
+//   if(val === null){
+//     return undefined;
+//   } else {
+//     return val;
+//   }
+// };
+
+// const display = (rootTree) => {
+//   setParentsNull(rootTree);
+//   console.log(JSON.stringify(rootTree, replacer, 2));
+// };
+// display(BST);
