@@ -66,6 +66,37 @@ class BinarySearchTree {
 
 }
 
+// DISPLAY TREE
+const setParentsNull = (tree) => {
+  if (!tree.left && !tree.right) {
+    tree.parent = null;
+    return;
+  } else if(!tree.right){
+    tree.parent = null;
+    return setParentsNull(tree.left);
+  } else if(!tree.left){
+    tree.parent = null;
+    return setParentsNull(tree.right);
+  } else {
+    tree.parent = null;
+    setParentsNull(tree.right);
+    setParentsNull(tree.left);
+  }
+};
+const replacer = (name, val) => {
+  if(val === null){
+    return undefined;
+  } else {
+    return val;
+  }
+};
+
+const display = (rootTree) => {
+  setParentsNull(rootTree);
+  console.log(JSON.stringify(rootTree, replacer, 2));
+};
+
+// INSERT ITEMS
 const BST = new BinarySearchTree();
 BST.insert(3);
 BST.insert(1);
@@ -76,4 +107,14 @@ BST.insert(2);
 BST.insert(5);
 BST.insert(7);
 
-console.log(BST);
+function findHeight(tree) {
+  if(!tree) {
+    return 0;
+  }
+  const leftHeight = findHeight(tree.left);
+  const rightHeight = findHeight(tree.right);
+
+  return Math.max(leftHeight, rightHeight) + 1;
+}
+ 
+console.log(findHeight(BST));
