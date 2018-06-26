@@ -64,6 +64,41 @@ class BinarySearchTree {
     }
   }
 
+  _replaceWith(node) {
+    if (this.parent) {
+      if (this === this.parent.left) {
+        this.parent.left = node;
+      } else if (this === this.parent.right) {
+        this.parent.right = node;
+      }
+
+      if (node) {
+        node.parent = this.parent;
+      }
+    }
+    else {
+      if (node) {
+        this.key = node.key;
+        this.value = node.value;
+        this.left = node.left;
+        this.right = node.right;
+      }
+      else {
+        this.key = null;
+        this.value = null;
+        this.left = null;
+        this.right = null;
+      }
+    }
+  }
+
+  _findMin() {
+    if (!this.left) {
+      return this;
+    }
+    return this.left._findMin();
+  }
+
 }
 
 // DISPLAY TREE
@@ -108,7 +143,7 @@ BST.insert(5);
 BST.insert(7);
 
 function findHeight(tree) {
-  if(!tree) {
+  if (!tree) {
     return 0;
   }
   const leftHeight = findHeight(tree.left);
@@ -116,5 +151,63 @@ function findHeight(tree) {
 
   return Math.max(leftHeight, rightHeight) + 1;
 }
- 
-console.log(findHeight(BST));
+
+// is it BST?
+// Write an algorithm to check whether an arbitrary binary tree is a binary search tree, assuming the tree does not contain duplicates
+
+function isBinary(node) {
+  if (!node) {
+    return true;
+  }
+
+  if (node.left !== null && node.left.key > node.key) {
+    return false;
+  }
+
+  if (node.right !== null && node.right.key < node.key) {
+    return false;
+  }
+
+  const leftSide = isBinary(node.left);
+  const rightSide = isBinary(node.right);
+
+  if (!leftSide || !rightSide) {
+    return false;
+  }
+
+  return true;
+}
+
+// Third largest node
+// Write an algorithm to find the third largest node in a binary search tree
+
+function thirdLargest(node, count = {n:0}) {
+  if (!node || count.n === 3) return;
+
+  thirdLargest(node.right, count);
+  count.n++;
+
+  if (count.n === 3) {
+    console.log(node);
+  }
+
+  thirdLargest(node.left, count);
+}
+
+thirdLargest(BST); // 6
+
+// Balanced BST
+// Write an algorithm that checks if a BST is balanced (i.e. a tree where no two leaves differ in distance from the root by more than one).
+
+function isBalanced(node) {
+  const leftHeight = findHeight(node.left);
+  const rightHeight = findHeight(node.right);
+
+  if (Math.abs(leftHeight - rightHeight) > 1) {
+    return false;
+  } 
+
+  return true;
+}
+
+console.log(isBalanced(BST));
